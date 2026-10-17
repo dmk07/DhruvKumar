@@ -1,242 +1,1785 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Studora · Student Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet"/>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins','Segoe UI',sans-serif}
-:root{--bg:#0b1020;--card:rgba(255,255,255,.06);--border:rgba(255,255,255,.13);--text:#eef1fb;--muted:#94a1c2;
---shadow:0 14px 34px rgba(0,0,0,.4);--g1:#7c6cff;--g2:#3ddad7;--g3:#fd79a8;--ok:#69db7c;--warn:#ffd43b;--bad:#ff6b81}
-body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-.blob{position:fixed;border-radius:50%;filter:blur(100px);opacity:.35;z-index:-1;animation:drift 18s infinite alternate ease-in-out}
-.blob1{width:420px;height:420px;background:#6c5ce7;top:-120px;left:-100px}
-.blob2{width:380px;height:380px;background:#00d2c6;bottom:-140px;right:-80px;animation-delay:-6s}
-.blob3{width:280px;height:280px;background:#fd79a8;top:35%;left:60%;animation-delay:-12s}
-@keyframes drift{to{transform:translate(60px,40px) scale(1.15)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
-@keyframes shine{to{background-position:300% 0}}
-@keyframes marquee{to{transform:translateX(-50%)}}
-@keyframes pulseRing{0%,100%{box-shadow:0 0 0 0 rgba(255,77,109,.5)}50%{box-shadow:0 0 0 9px rgba(255,77,109,0)}}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-@keyframes floaty{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-16px) rotate(5deg)}}
-@keyframes dots{0%,80%,100%{transform:scale(.4);opacity:.4}40%{transform:scale(1);opacity:1}}
-@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
-@keyframes fixIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
-
-.card{background:var(--card);border:1px solid var(--border);border-radius:18px;backdrop-filter:blur(12px)}
-.grad-text{background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3),var(--g1));background-size:300% 100%;
--webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
-.btn{border:none;border-radius:12px;padding:11px 20px;font-weight:700;font-size:.9rem;cursor:pointer;color:#fff;
-background:linear-gradient(120deg,var(--g1),#5a8bff);transition:transform .2s,box-shadow .2s;font-family:inherit}
-.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(124,108,255,.45)}
-.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
-.btn.danger{background:linear-gradient(120deg,#ff6b81,#ff4d6d)}
-.btn.small{padding:6px 12px;font-size:.78rem;border-radius:9px}
-.inp{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.07);
-color:var(--text);outline:none;font-size:.9rem;font-family:inherit;transition:box-shadow .25s}
-.inp:focus{box-shadow:0 0 0 3px rgba(124,108,255,.35)}
-select.inp option{background:#141a33;color:#eef1fb}
-label.fl{font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin:12px 0 5px}
-.muted{color:var(--muted)}
-
-/* ---------- HOME ---------- */
-.topnav{display:flex;justify-content:space-between;align-items:center;padding:20px 6vw}
-.logo{font-size:1.6rem;font-weight:800;letter-spacing:.5px}
-.logo small{display:block;font-size:.62rem;font-weight:500;color:var(--muted);letter-spacing:2.5px;-webkit-text-fill-color:var(--muted)}
-.hero{text-align:center;padding:7vh 6vw 5vh;animation:fadeUp .8s ease both}
-.hero h1{font-size:clamp(2rem,5.5vw,3.4rem);line-height:1.15;margin-bottom:14px}
-.hero p{color:var(--muted);max-width:560px;margin:0 auto 28px}
-.hero .emo{position:absolute;font-size:1.9rem;animation:floaty 5s ease-in-out infinite;pointer-events:none}
-.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.ticker{overflow:hidden;white-space:nowrap;margin:34px 0;animation:fadeUp 1s .2s both}
-.ticker-track{display:inline-flex;gap:12px;padding-left:12px;animation:marquee 24s linear infinite}
-.bchip{padding:8px 18px;border-radius:999px;font-size:.8rem;font-weight:600;border:1px solid var(--border);background:var(--card)}
-.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;padding:0 6vw 40px;max-width:1100px;margin:0 auto}
-.feat{padding:22px;border-radius:18px;transition:transform .25s;animation:pop .6s ease both}
-.feat:hover{transform:translateY(-6px) scale(1.02)}
-.feat .ic{font-size:1.9rem;margin-bottom:10px;display:inline-block;animation:bob 3s ease-in-out infinite}
-.feat h3{font-size:1rem;margin-bottom:6px}
-.feat p{font-size:.8rem;color:var(--muted)}
-footer{text-align:center;padding:26px;color:var(--muted);font-size:.78rem}
-
-/* ---------- AUTH ---------- */
-.center-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-.auth-box{width:100%;max-width:420px;padding:30px;animation:pop .5s ease both}
-.seg{display:flex;gap:6px;background:rgba(255,255,255,.06);padding:5px;border-radius:12px;margin-bottom:8px}
-.seg button{flex:1;padding:9px;border:none;border-radius:9px;background:transparent;color:var(--muted);font-weight:600;cursor:pointer;font-family:inherit;transition:all .25s}
-.seg button.on{background:linear-gradient(120deg,var(--g1),#5a8bff);color:#fff}
-
-/* ---------- DASHBOARD ---------- */
-.dash{display:flex;gap:22px;max-width:1200px;margin:0 auto;padding:24px 20px 60px}
-.side{width:235px;min-width:235px;padding:20px;display:flex;flex-direction:column;gap:14px;align-self:flex-start;position:sticky;top:20px;animation:fadeUp .5s ease both}
-.uchip{display:flex;gap:12px;align-items:center}
-.avatar{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.15rem;color:#fff;background:linear-gradient(135deg,var(--uc,#7c6cff),#fd79a8);flex-shrink:0}
-.uchip b{font-size:.92rem;display:block}.uchip small{font-size:.68rem;color:var(--muted)}
-.side nav{display:flex;flex-direction:column;gap:6px}
-.navbtn{text-align:left;padding:10px 13px;border-radius:11px;border:1px solid transparent;background:transparent;color:var(--muted);font-weight:600;font-size:.86rem;cursor:pointer;font-family:inherit;transition:all .22s;position:relative}
-.navbtn:hover{color:var(--text);background:rgba(255,255,255,.05)}
-.navbtn.active{background:linear-gradient(120deg,var(--g1),#5a8bff);color:#fff;box-shadow:0 6px 16px rgba(124,108,255,.35)}
-.dot{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:#ff4d6d;color:#fff;font-size:.62rem;font-weight:800;min-width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 4px}
-.main{flex:1;min-width:0;animation:fadeUp .5s .1s ease both}
-.announce{background:linear-gradient(120deg,rgba(255,212,59,.16),rgba(255,107,129,.14));border:1px solid rgba(255,212,59,.4);
-padding:12px 16px;border-radius:14px;margin-bottom:18px;display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:.86rem}
-.announce button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem}
-h2.pt{margin:4px 0 18px;font-size:1.3rem;animation:pop .4s ease both}
-h2.pt span{font-size:.8rem;color:var(--muted);font-weight:500;margin-left:8px}
-
-/* timetable */
-.daytabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-.tab{padding:8px 15px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-weight:600;font-size:.8rem;cursor:pointer;transition:all .25s;font-family:inherit}
-.tab:hover{transform:translateY(-2px);color:var(--text)}
-.tab.active{background:linear-gradient(120deg,var(--g1),#5a8bff);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(124,108,255,.4)}
-.next-banner{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
-background:linear-gradient(120deg,rgba(124,108,255,.22),rgba(61,218,215,.16));border:1px solid var(--border);
-border-radius:16px;padding:16px 20px;margin-bottom:20px}
-.next-banner h4{font-size:.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:3px}
-#countdown{font-size:1.5rem;font-weight:800;font-variant-numeric:tabular-nums}
-.cls{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:15px;
-padding:14px 16px 14px 20px;margin-bottom:11px;position:relative;overflow:hidden;transition:transform .22s;animation:pop .45s ease both;animation-delay:var(--d)}
-.cls::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
-.cls:hover{transform:translateY(-3px)}
-.cls.now{border-color:rgba(255,77,109,.45)}
-.live{font-size:.58rem;font-weight:800;letter-spacing:1px;color:#fff;background:#ff4d6d;padding:3px 9px;border-radius:999px;animation:pulseRing 1.4s infinite}
-.t-start{font-weight:800}.t-end{font-size:.72rem;color:var(--muted)}
-.cls h3{font-size:.95rem;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
-.cls p{font-size:.78rem;color:var(--muted);margin-top:2px}
-
-/* attendance */
-.att-sum{display:flex;gap:12px;align-items:center;padding:15px 18px;margin-bottom:16px;font-weight:600;font-size:.9rem}
-.att-row{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px;margin-bottom:12px;animation:pop .45s ease both;animation-delay:var(--d);flex-wrap:wrap}
-.ring{width:74px;height:74px;flex-shrink:0}
-.ring circle{fill:none;stroke-width:7;stroke-linecap:round}
-.ring .bgc{stroke:rgba(255,255,255,.09)}
-.ring text{fill:var(--text);font-weight:800;font-size:15px;font-family:'Poppins'}
-.ring .fg{transform:rotate(-90deg);transform-origin:40px 40px;transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1)}
-.att-info{flex:1;min-width:150px}
-.att-info h3{font-size:.95rem}.att-info p{font-size:.76rem;color:var(--muted);margin-top:3px}
-.counts{display:flex;gap:14px;font-size:.8rem;margin-top:6px}
-.counts b{font-size:.95rem}
-.att-acts{display:flex;gap:7px;flex-wrap:wrap}
-.pill{font-size:.62rem;font-weight:800;letter-spacing:1px;padding:3px 10px;border-radius:999px}
-.p-ok{background:rgba(105,219,124,.18);color:var(--ok)}.p-warn{background:rgba(255,212,59,.15);color:var(--warn)}.p-bad{background:rgba(255,107,129,.16);color:var(--bad)}
-
-/* cgpa */
-.cg-row{display:flex;gap:10px;align-items:center;margin-bottom:10px;animation:pop .35s both}
-.cg-row .inp{flex:1}
-.cg-row button{flex-shrink:0}
-.cg-big{font-size:2.7rem;font-weight:800}
-.gauge{height:14px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin:10px 0 6px}
-.gauge div{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--g1),var(--g2));transition:width .9s cubic-bezier(.4,0,.2,1)}
-
-/* calendar */
-.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.cal-head h3{font-size:1.05rem}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.cal-grid .wd{text-align:center;font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:5px 0}
-.cal-cell{aspect-ratio:1;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:.82rem;
-background:rgba(255,255,255,.045);border:1px solid transparent;cursor:pointer;transition:all .2s;font-family:inherit;color:var(--text)}
-.cal-cell:hover{background:rgba(255,255,255,.12)}
-.cal-cell.today{border-color:var(--g2)}
-.cal-cell.sel{background:linear-gradient(135deg,var(--g1),#5a8bff);color:#fff;font-weight:700;transform:scale(1.06)}
-.cal-cell.blank{background:transparent;cursor:default}
-.habit{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 15px;background:var(--card);border:1px solid var(--border);border-radius:13px;margin-bottom:10px;animation:pop .4s both}
-.habit .st{font-size:.78rem;color:var(--muted)}
-.flame{display:inline-block;animation:bob 2s infinite}
-.hbtns{display:flex;gap:8px;align-items:center}
-.ck{width:26px;height:26px;border-radius:8px;border:2px solid var(--border);background:transparent;cursor:pointer;font-size:.85rem;color:#fff;font-family:inherit;transition:all .2s}
-.ck.on{background:linear-gradient(135deg,var(--g1),var(--g2));border-color:transparent}
-
-/* cam */
-.cam-wrap{display:flex;gap:20px;flex-wrap:wrap}
-.cam-left{flex:1;min-width:260px}
-.cam-video{width:100%;max-width:340px;border-radius:16px;border:1px solid var(--border);background:#000;aspect-ratio:4/3;object-fit:cover}
-.mbar{height:16px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin:10px 0}
-.mbar div{height:100%;background:linear-gradient(90deg,var(--g2),var(--ok));border-radius:999px;transition:width .4s}
-.stat-line{display:flex;justify-content:space-between;font-size:.82rem;padding:8px 0;border-bottom:1px dashed var(--border)}
-.status-pill{padding:5px 14px;border-radius:999px;font-weight:700;font-size:.8rem;display:inline-block}
-.st-on{background:rgba(105,219,124,.18);color:var(--ok)}.st-mid{background:rgba(77,171,247,.18);color:#4dabf7}.st-away{background:rgba(255,107,129,.16);color:var(--bad)}
-
-/* chat */
-.chat-box{height:420px;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
-.msg{max-width:78%;padding:11px 15px;border-radius:16px;font-size:.87rem;line-height:1.5;animation:pop .3s both;white-space:pre-wrap}
-.msg.bot{background:var(--card);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:5px}
-.msg.me{background:linear-gradient(120deg,var(--g1),#5a8bff);align-self:flex-end;border-bottom-right-radius:5px}
-.typing span{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin-right:4px;animation:dots 1.2s infinite}
-.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
-.chat-in{display:flex;gap:10px}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.chip{padding:7px 13px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:.76rem;cursor:pointer;font-family:inherit;transition:all .2s}
-.chip:hover{color:var(--text);transform:translateY(-2px)}
-
-/* feedback */
-.stars{display:flex;gap:6px;font-size:1.5rem;margin:6px 0 4px}
-.stars button{background:none;border:none;cursor:pointer;font-size:1.5rem;filter:grayscale(1);transition:transform .15s,filter .15s;font-family:inherit}
-.stars button.on{filter:none;transform:scale(1.15)}
-.fb-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:15px 17px;margin-bottom:12px;animation:pop .4s both}
-.fb-card.reply{border-color:rgba(105,219,124,.5)}
-.fb-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px;font-size:.74rem;color:var(--muted)}
-.reply-box{margin-top:10px;padding:11px 13px;border-left:3px solid var(--ok);background:rgba(105,219,124,.08);border-radius:999px;font-size:.84rem}
-
-/* master */
-.mstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px}
-.mstat{padding:18px;animation:pop .5s both;animation-delay:var(--d)}
-.mstat .num{font-size:1.9rem;font-weight:800}
-.mstat .lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px}
-.bar-row{display:flex;align-items:center;gap:12px;margin-bottom:9px;font-size:.8rem}
-.bar-row .nm{width:170px;min-width:170px;color:var(--muted)}
-.bar-row .bar{flex:1;height:13px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
-.bar-row .bar div{height:100%;border-radius:999px;width:0;transition:width 1s cubic-bezier(.4,0,.2,1)}
-.bar-row .ct{width:26px;text-align:right;font-weight:700}
-.tbl{width:100%;border-collapse:collapse;font-size:.82rem}
-.tbl th{text-align:left;color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:1.5px;padding:99px 10px;border-bottom:1px solid var(--border)}
-.tbl td{padding:10px;border-bottom:1px solid rgba(255,255,255,.06)}
-.bchip-s{font-size:.68rem;font-weight:700;padding:3px 10px;border-radius:999px;color:#fff}
-.fixline{font-size:.82rem;padding:7px 10px;border-left:3px solid var(--ok);background:rgba(105,219,124,.07);border-radius:8px;margin-bottom:7px;animation:fixIn .4s both}
-
-/* misc */
-.empty{text-align:center;padding:50px 16px;color:var(--muted)}
-.empty .emoji{font-size:2.6rem;display:block;margin-bottom:10px;animation:bob 2.5s infinite}
-#toasts{position:fixed;right:20px;bottom:20px;z-index:99;display:flex;flex-direction:column;gap:10px}
-.toast{background:#1a2140;border:1px solid var(--border);border-left:4px solid var(--g2);padding:13px 18px;border-radius:12px;
-font-size:.84rem;box-shadow:var(--shadow);animation:toastIn .35s both;max-width:320px}
-.toast.err{border-left-color:var(--bad)}
-@media(max-width:900px){.dash{flex-direction:column}.side{width:100%;position:static}.side nav{flex-direction:row;flex-wrap:wrap}}
-</style>
-</head>
-<body>
-<div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div>
-<div id="app"></div>
-<div id="toasts"></div>
-
-<script>
-/* ================= UTILS & DB ================= */
-const $=s=>document.querySelector(s);
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const uid=()=>Math.random().toString(36).slice(2,10);
-const todayStr=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-const toMin=t=>{const[h,m]=t.split(":").map(Number);return h*60+m;};
-const DB={
-  get:(k,d)=>{try{const v=JSON.parse(localStorage.getItem("cm_"+k));return v===null||v===undefined?d:v}catch(e){return d}},
-  set:(k,v)=>localStorage.setItem("cm_"+k,JSON.stringify(v))
-};
-function toast(msg,err){const t=document.createElement("div");t.className="toast"+(err?" err":"");t.textContent=msg;
-  $("#toasts").appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity .4s";setTimeout(()=>t.remove(),400)},3400);}
-
-/* ================= CONSTANTS ================= */
-const BRANCHES=[
- {id:"mtcse",name:"M.Tech Integrated CSE",color:"#ff6b9d",room:"PG-CS",subs:["Advanced Algorithms","Machine Learning","Compiler Design","Big Data Analytics","Research Methodology","ML Lab"]},
- {id:"aitwin",name:"AI TWIN",color:"#a78bfa",room:"AI",subs:["Deep Learning","Neural Networks","Natural Language Processing","Reinforcement Learning","AI Ethics","DL Lab"]},
- {id:"csecore",name:"CSE CORE",color:"#38bdf8",room:"CS",subs:["Data Structures","Operating Systems","DBMS","Computer Networks","Theory of Computation","DS Lab"]},
- {id:"csetwin",name:"CSE TWIN",color:"#34d399",room:"CT",subs:["Data Structures","Software Engineering","DBMS","Web Technologies","Cloud Computing","Web Lab"]},
- {id:"mech",name:"Mechanical Engineering",color:"#fb923c",room:"ME",subs:["Thermodynamics","Fluid Mechanics","Machine Design","Heat Transfer","Manufacturing Processes","CAD Lab"]},
- {id:"ds",name:"CS Data Science",color:"#f472b6",room:"DS",subs:["Statistics","Data Mining","Python for DS","Data Visualization","Big Data","Analytics Lab"]},
- {id:"iot",name:"CS IOT",color:"#22d3ee",room:"IoT",subs:["Embedded Systems","Sensors & Actuators","IoT Protocols","Microcontrollers","Edge Computing","IoT Lab"]},
- {id:"bs",name:"CS BS",color:"#facc15",room:"BS",subs:["Discrete Mathematics","Probability","Linear Algebra","Optimization","Statistics","Computational Lab"]},
- {id:"ittwin",name:"IT TWIN",color:"#c084fc",room:"IT",subs:["Web Development","Network Security","Database Systems","Software Testing","UI/UX Design","Project Lab"]},
- {id:"csit",name:"CS IT",color:"#4ade80",room:"IT",subs:["Programming in C","Digital Logic","Computer Architecture","OOPs","Data Structures","IT Workshop"]}
-];
-const DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-const SLOTS=[["09:00","10:00"],["10:15","11:15"],
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#080b12" />
+    <title>Studora — Academic Workspace</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+      :root {
+        --bg: #080b12;
+        --panel: #101722;
+        --line: #263144;
+        --text: #f3f5fa;
+        --muted: #8995aa;
+        --gold: #e7bd68;
+        --blue: #477cff;
+        --cyan: #4ed9ed;
+        --green: #4bd2a0;
+        --red: #ff7183;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(ellipse at 75% 0, #15264b66, transparent 38%),
+          var(--bg);
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      .wrap {
+        width: min(1160px, calc(100% - 36px));
+        margin: auto;
+      }
+      .brand {
+        font: 800 19px Manrope;
+        letter-spacing: -0.04em;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .mark {
+        width: 31px;
+        height: 31px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, #ffdf91, #bc8835);
+        color: #121722;
+        display: grid;
+        place-items: center;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .gold {
+        color: var(--gold);
+      }
+      .eyebrow {
+        font-size: 10px;
+        letter-spacing: 0.17em;
+        color: var(--gold);
+        font-weight: 700;
+      }
+      .btn {
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 11px 15px;
+        background: linear-gradient(135deg, #ffdf91, #c08b38);
+        color: #141720;
+        font-weight: 700;
+        transition: 0.18s;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.07);
+      }
+      .btn.blue {
+        background: linear-gradient(135deg, #477cff, #3354c5);
+        color: white;
+      }
+      .btn.outline {
+        background: #111824;
+        border-color: var(--line);
+        color: var(--text);
+      }
+      .btn.ghost {
+        background: transparent;
+        border: 0;
+        color: var(--muted);
+      }
+      .btn.danger {
+        background: #351923;
+        color: #ff9baa;
+      }
+      .btn.sm {
+        font-size: 11px;
+        padding: 7px 10px;
+      }
+      .topbar {
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #fff1;
+      }
+      .links,
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+      .links a {
+        color: #aab4c4;
+        font-size: 12px;
+        text-decoration: none;
+      }
+      .actions {
+        gap: 9px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 35px;
+        align-items: center;
+        padding: 65px 0;
+      }
+      .hero h1 {
+        font: 800 clamp(40px, 6vw, 67px) / 1.03 Manrope;
+        letter-spacing: -0.06em;
+        margin: 15px 0;
+      }
+      .hero p {
+        max-width: 480px;
+        color: #a9b4c4;
+        font-size: 15px;
+        line-height: 1.7;
+      }
+      .hero-actions {
+        display: flex;
+        gap: 10px;
+        margin: 25px 0 17px;
+      }
+      .mock {
+        border: 1px solid #35435a;
+        background: linear-gradient(145deg, #161e2c, #0c111a);
+        border-radius: 14px;
+        padding: 15px;
+        box-shadow: 0 25px 70px #0009;
+        position: relative;
+      }
+      .mockhead {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 3px 13px;
+        border-bottom: 1px solid var(--line);
+        font-size: 12px;
+      }
+      .mockgrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding-top: 12px;
+      }
+      .mini {
+        background: #111a28;
+        border: 1px solid #28364a;
+        border-radius: 9px;
+        padding: 11px;
+        font-size: 10px;
+      }
+      .mini h4 {
+        font-size: 11px;
+        margin: 0 0 9px;
+      }
+      .minirow {
+        margin: 7px 0;
+        padding: 7px;
+        background: #17243a;
+        border-left: 2px solid var(--gold);
+        border-radius: 4px;
+      }
+      .wk {
+        display: flex;
+        gap: 4px;
+      }
+      .wk span {
+        flex: 1;
+        text-align: center;
+        padding: 6px 2px;
+        background: #17243a;
+        border-radius: 5px;
+        font-size: 9px;
+      }
+      .bar {
+        height: 5px;
+        background: #293449;
+        border-radius: 5px;
+        margin-top: 8px;
+      }
+      .bar i {
+        display: block;
+        height: 100%;
+        background: linear-gradient(90deg, var(--blue), var(--cyan));
+        border-radius: 5px;
+      }
+      .float {
+        position: absolute;
+        padding: 10px 12px;
+        background: #161f2d;
+        border: 1px solid #39465a;
+        border-radius: 8px;
+        font-size: 10px;
+        box-shadow: 0 15px 35px #0008;
+        animation: up 4s infinite ease-in-out;
+      }
+      .float.a {
+        right: -12px;
+        top: 8%;
+      }
+      .float.b {
+        left: -15px;
+        bottom: 8%;
+        animation-delay: -2s;
+      }
+      @keyframes up {
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+      section {
+        padding: 65px 0;
+        border-top: 1px solid #fff1;
+      }
+      .stitle {
+        text-align: center;
+        max-width: 620px;
+        margin: 0 auto 32px;
+      }
+      .stitle h2 {
+        font: 750 clamp(27px, 4vw, 40px) / 1.15 Manrope;
+        letter-spacing: -0.045em;
+        margin: 10px 0;
+      }
+      .stitle p {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+      .features {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 11px;
+      }
+      .feature,
+      .step,
+      .card {
+        background: linear-gradient(145deg, #111925, #0c111a);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 17px;
+      }
+      .feature {
+        min-height: 135px;
+        transition: 0.2s;
+      }
+      .feature:hover {
+        transform: translateY(-3px);
+        border-color: #d4ae6177;
+      }
+      .feature .ico {
+        color: var(--gold);
+        font-size: 20px;
+      }
+      .feature h3 {
+        font-size: 13px;
+        margin: 13px 0 6px;
+      }
+      .feature p,
+      .step p {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.55;
+        margin: 0;
+      }
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      .step {
+        border-top: 1px solid var(--gold);
+      }
+      .step strong {
+        font: 800 28px Manrope;
+        color: var(--gold);
+      }
+      .step h3 {
+        font-size: 13px;
+      }
+      .flow {
+        display: grid;
+        grid-template-columns: 1fr 55px 1fr;
+        gap: 12px;
+        align-items: center;
+      }
+      .scatter,
+      .workspace {
+        background: #0e1420;
+        border: 1px dashed #38445a;
+        border-radius: 12px;
+        min-height: 180px;
+        padding: 17px;
+      }
+      .scatter span {
+        display: inline-block;
+        margin: 8px;
+        padding: 8px;
+        background: #172133;
+        border: 1px solid #2b374b;
+        border-radius: 7px;
+        font-size: 11px;
+      }
+      .workspace {
+        border-style: solid;
+      }
+      .wrow {
+        padding: 9px;
+        border-bottom: 1px solid #252f40;
+        font-size: 11px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .arrow {
+        text-align: center;
+        color: var(--gold);
+        font-size: 25px;
+      }
+      .chatdemo {
+        max-width: 720px;
+        margin: auto;
+        padding: 20px;
+      }
+      .bubble {
+        padding: 10px 13px;
+        border-radius: 9px;
+        background: #17243a;
+        margin: 8px 0;
+        font-size: 11px;
+        line-height: 1.6;
+        max-width: 82%;
+      }
+      .bubble.ai {
+        margin-left: auto;
+        background: #1b345d;
+      }
+      .cta {
+        text-align: center;
+        background: radial-gradient(
+          ellipse at center,
+          #17346855,
+          transparent 70%
+        );
+      }
+      .cta h2 {
+        font: 800 36px Manrope;
+      }
+      .cta p,
+      footer {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      footer {
+        border-top: 1px solid #fff1;
+        padding: 25px 0;
+      }
+      footer .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .auth {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .authvisual {
+        padding: 8vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: radial-gradient(ellipse at center, #19356766, transparent);
+      }
+      .authvisual h1 {
+        font: 800 47px/1.08 Manrope;
+        letter-spacing: -0.05em;
+      }
+      .authform {
+        width: min(380px, 90%);
+        margin: auto;
+      }
+      .authform h2 {
+        font: 750 27px Manrope;
+        margin: 10px 0;
+      }
+      .field {
+        display: grid;
+        gap: 6px;
+        margin: 13px 0;
+      }
+      .field label {
+        font-size: 11px;
+        color: #abb5c5;
+      }
+      .input {
+        background: #0b111b;
+        color: white;
+        border: 1px solid #2c3749;
+        border-radius: 7px;
+        padding: 11px;
+        width: 100%;
+        outline: 0;
+      }
+      .input:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px #477cff22;
+      }
+      .authform .btn {
+        width: 100%;
+        margin-top: 8px;
+      }
+      .app {
+        display: none;
+      }
+      .apphead {
+        height: 62px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        position: sticky;
+        top: 0;
+        background: #090d15ee;
+        border-bottom: 1px solid var(--line);
+        z-index: 3;
+      }
+      .appgrid {
+        display: grid;
+        grid-template-columns: 205px 1fr;
+        max-width: 1420px;
+        margin: auto;
+      }
+      .side {
+        height: calc(100vh - 62px);
+        position: sticky;
+        top: 62px;
+        border-right: 1px solid var(--line);
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+      }
+      .nav {
+        background: transparent;
+        border: 0;
+        color: #9da8b9;
+        text-align: left;
+        padding: 10px;
+        border-radius: 7px;
+        font-size: 12px;
+      }
+      .nav:hover,
+      .nav.on {
+        background: #18233a;
+        color: white;
+        box-shadow: inset 2px 0 var(--gold);
+      }
+      .nav i {
+        font-style: normal;
+        color: var(--gold);
+        margin-right: 9px;
+      }
+      .sidefoot {
+        margin-top: auto;
+      }
+      .main {
+        padding: 25px;
+        min-width: 0;
+      }
+      .pagehead {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 19px;
+      }
+      .pagehead h1 {
+        font: 750 24px Manrope;
+        margin: 5px 0;
+      }
+      .pagehead p {
+        font-size: 11px;
+        color: var(--muted);
+        margin: 0;
+      }
+      .grid {
+        display: grid;
+        gap: 12px;
+      }
+      .stats {
+        grid-template-columns: repeat(4, 1fr);
+        margin-bottom: 13px;
+      }
+      .two {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+      .three {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .cardtitle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .cardtitle h3 {
+        font: 700 13px Manrope;
+        margin: 0;
+      }
+      .cardtitle small {
+        color: var(--muted);
+        font-size: 9px;
+      }
+      .value {
+        font: 750 25px Manrope;
+        margin: 8px 0 2px;
+      }
+      .statlabel {
+        font-size: 9px;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        border-bottom: 1px solid #fff1;
+        padding: 9px 0;
+        font-size: 11px;
+      }
+      .row:last-child {
+        border: 0;
+      }
+      .grow {
+        flex: 1;
+        min-width: 0;
+      }
+      .row small {
+        display: block;
+        color: var(--muted);
+        font-size: 9px;
+        margin-top: 3px;
+      }
+      .tag {
+        font-size: 9px;
+        padding: 4px 7px;
+        border-radius: 4px;
+        background: #1b2b49;
+        color: #b6caff;
+      }
+      .tag.goldtag {
+        background: #352b19;
+        color: #efd28c;
+      }
+      .tag.redtag {
+        background: #391c25;
+        color: #ff9baa;
+      }
+      .iconbtn {
+        background: #111925;
+        border: 1px solid var(--line);
+        color: #abb4c4;
+        border-radius: 6px;
+        padding: 6px;
+      }
+      .empty {
+        padding: 18px 5px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .tablewrap {
+        overflow: auto;
+      }
+      .table {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: 520px;
+        font-size: 10px;
+      }
+      .table th,
+      .table td {
+        text-align: left;
+        padding: 10px;
+        border-bottom: 1px solid #fff1;
+      }
+      .table th {
+        color: var(--muted);
+        font-size: 9px;
+      }
+      .table input,
+      .table select {
+        background: #0b111b;
+        color: white;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        padding: 5px;
+        font-size: 10px;
+      }
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        border-left: 1px solid var(--line);
+        border-top: 1px solid var(--line);
+      }
+      .calhead,
+      .calday {
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding: 7px;
+        min-height: 74px;
+      }
+      .calhead {
+        min-height: auto;
+        font-size: 9px;
+        color: var(--muted);
+      }
+      .calday {
+        font-size: 10px;
+        cursor: pointer;
+      }
+      .calday:hover,
+      .calday.today {
+        background: #17233a;
+      }
+      .event {
+        display: block;
+        margin-top: 4px;
+        padding: 3px;
+        background: #182947;
+        border-left: 2px solid var(--blue);
+        font-size: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .classrow {
+        display: grid;
+        grid-template-columns: 90px 1fr auto;
+        gap: 9px;
+        align-items: center;
+        padding: 11px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        margin: 7px 0;
+        background: #111925;
+      }
+      .clock {
+        color: var(--gold);
+        font-size: 10px;
+      }
+      .chatpanel {
+        height: min(520px, 65vh);
+        display: flex;
+        flex-direction: column;
+      }
+      .messages {
+        flex: 1;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        padding: 8px;
+      }
+      .msg {
+        max-width: 80%;
+        background: #17243a;
+        padding: 10px 12px;
+        border-radius: 9px;
+        font-size: 11px;
+        line-height: 1.6;
+        white-space: pre-line;
+      }
+      .msg.me {
+        align-self: flex-end;
+        background: #203a68;
+      }
+      .compose {
+        display: flex;
+        gap: 7px;
+        border-top: 1px solid var(--line);
+        padding-top: 10px;
+      }
+      .compose input {
+        flex: 1;
+      }
+      .prompts {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin: 9px 0;
+      }
+      .prompt {
+        font-size: 9px;
+        background: #121d2d;
+        color: #bbc6d7;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 7px;
+      }
+      .notice {
+        background: #111c2b;
+        padding: 10px;
+        border-radius: 7px;
+        color: #9eacc1;
+        font-size: 10px;
+        line-height: 1.55;
+        margin-top: 10px;
+      }
+      .drop {
+        padding: 22px;
+        text-align: center;
+        border: 1px dashed #43516b;
+        border-radius: 8px;
+        background: #101827;
+      }
+      .drop label {
+        color: var(--gold);
+        cursor: pointer;
+      }
+      .drop input {
+        display: none;
+      }
+      .toast {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        background: #1a2940;
+        border: 1px solid #445576;
+        padding: 12px 15px;
+        border-radius: 8px;
+        font-size: 11px;
+        z-index: 9;
+      }
+      .modalbg {
+        position: fixed;
+        inset: 0;
+        background: #000b;
+        display: grid;
+        place-items: center;
+        padding: 15px;
+        z-index: 8;
+      }
+      .modal {
+        width: min(460px, 100%);
+        background: #101722;
+        border: 1px solid #39465d;
+        border-radius: 10px;
+        padding: 20px;
+      }
+      .modal h3 {
+        font: 700 16px Manrope;
+        margin: 0 0 12px;
+      }
+      @media (max-width: 850px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .features {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .steps {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .auth {
+          grid-template-columns: 1fr;
+        }
+        .authvisual {
+          display: none;
+        }
+        .appgrid {
+          grid-template-columns: 64px 1fr;
+        }
+        .side {
+          padding: 10px 6px;
+        }
+        .nav {
+          font-size: 0;
+          text-align: center;
+        }
+        .nav i {
+          font-size: 16px;
+          margin: 0;
+        }
+        .sidefoot {
+          display: none;
+        }
+        .two {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 580px) {
+        .wrap {
+          width: calc(100% - 28px);
+        }
+        .links {
+          display: none;
+        }
+        .hero {
+          padding: 44px 0;
+        }
+        .hero h1 {
+          font-size: 42px;
+        }
+        .float {
+          font-size: 8px;
+        }
+        .features {
+          gap: 7px;
+        }
+        .feature {
+          padding: 12px;
+          min-height: 128px;
+        }
+        .flow {
+          grid-template-columns: 1fr;
+        }
+        .arrow {
+          transform: rotate(90deg);
+        }
+        section {
+          padding: 48px 0;
+        }
+        .apphead {
+          padding: 0 11px;
+        }
+        .appgrid {
+          display: block;
+        }
+        .side {
+          height: auto;
+          position: sticky;
+          top: 62px;
+          z-index: 4;
+          flex-direction: row;
+          overflow: auto;
+          border: 0;
+          border-bottom: 1px solid var(--line);
+          background: #090d15;
+          padding: 6px;
+        }
+        .nav {
+          flex: 0 0 38px;
+        }
+        .main {
+          padding: 15px 10px;
+        }
+        .stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .three {
+          grid-template-columns: 1fr;
+        }
+        .pagehead h1 {
+          font-size: 20px;
+        }
+        .pagehead {
+          align-items: flex-start;
+        }
+        .calhead,
+        .calday {
+          padding: 4px;
+          min-height: 57px;
+        }
+        .calhead {
+          font-size: 8px;
+        }
+        .event {
+          font-size: 7px;
+        }
+        .classrow {
+          grid-template-columns: 60px 1fr;
+        }
+        .classrow .right {
+          grid-column: 2;
+        }
+        .cta h2 {
+          font-size: 29px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="landing"></main>
+    <main id="auth" style="display: none"></main>
+    <main id="app" class="app"></main>
+    <div id="toast"></div>
+    <div id="modal"></div>
+    <script>
+      const $ = (s) => document.querySelector(s),
+        $$ = (s) => [...document.querySelectorAll(s)],
+        esc = (s) =>
+          String(s ?? "").replace(
+            /[&<>"']/g,
+            (c) =>
+              ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+              })[c],
+          );
+      const storeKey = "studora-workspace-v3";
+      let state = {};
+      try {
+        state = JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch {}
+      state.users ||= {};
+      state.session ||= null;
+      const save = () => localStorage.setItem(storeKey, JSON.stringify(state)),
+        today = () => new Date().toISOString().slice(0, 10),
+        uid = () => Math.random().toString(36).slice(2, 10),
+        days = [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ];
+      let active = "home",
+        cal = new Date();
+      const user = () => state.users[state.session] || null;
+      function profile() {
+        let u = user();
+        if (!u) return null;
+        return (u.data ||= {
+          name: u.name || "Student",
+          college: "",
+          course: "",
+          semester: "",
+          schedule: [],
+          tasks: [],
+          attendance: {},
+          semesters: [],
+          target: 8.5,
+          events: [],
+          reminder: 30,
+        });
+      }
+      function toast(s) {
+        let e = $("#toast");
+        e.className = "toast";
+        e.textContent = s;
+        setTimeout(() => (e.textContent = ""), 3000);
+      }
+      const brand =
+        '<div class="brand"><span class="mark">S</span>studora</div>';
+      function landing() {
+        if (user()) {
+          openApp();
+          return;
+        }
+        $("#auth").style.display = "none";
+        $("#app").style.display = "none";
+        $("#landing").style.display = "block";
+        $("#landing").innerHTML =
+          `<div class="wrap topbar">${brand}<nav class="links"><a href="#features">Features</a><a href="#how">How it works</a><a href="#assistant">AI assistant</a><a href="#about">About</a></nav><div class="actions"><button class="btn ghost sm" onclick="authPage('login')">Log in</button><button class="btn sm" onclick="authPage('signup')">Get started ↗</button></div></div>
+<div class="wrap hero"><div><div class="eyebrow">AI-POWERED STUDENT WORKSPACE</div><h1>Your entire student life.<br><span class="gold">Handled efficiently.</span></h1><p>Turn your timetable, assignments, deadlines and study schedule into one intelligent academic workspace.</p><div class="hero-actions"><button class="btn" onclick="authPage('signup')">Build my workspace ↗</button><a class="btn outline" href="#how">See how it works ↓</a></div><small class="muted">✦ Timetable OCR　✦ Smart reminders　✦ Academic insights</small></div><div style="position:relative"><div class="mock"><div class="mockhead"><b>Good morning, Alex ✦</b><small class="muted">MON · OCT 19</small></div><div class="mockgrid"><div class="mini"><h4>Weekly timetable</h4><div class="wk">${["M", "T", "W", "T", "F"].map((x, i) => `<span>${x}<br>${19 + i}</span>`).join("")}</div><div class="minirow">09:00　Computer Science</div><div class="minirow">11:30　Applied Mathematics</div></div><div class="mini"><h4>Today's focus</h4><p>☐ Finish physics lab report</p><p>✓ Revise lecture notes</p><p>☐ Submit project outline</p><div class="bar"><i style="width:52%"></i></div></div><div class="mini"><h4>Upcoming deadline</h4><b>Physics Lab Report</b><p class="muted">Due in 2 days · High</p></div><div class="mini"><h4>Study consistency</h4><div style="height:55px;display:flex;align-items:end;gap:5px">${[35, 55, 42, 76, 56, 88, 68].map((n) => `<i style="height:${n}%;flex:1;background:#345b9d;border-radius:3px 3px 0 0"></i>`).join("")}</div><small>WEEKLY PROGRESS</small></div></div></div><div class="float a">✦ AI reminder · Physics due Wednesday</div><div class="float b">◷ Class starts in 20 minutes</div></div></div>
+<section id="about"><div class="wrap"><div class="stitle"><div class="eyebrow">ONE CALM PLACE TO THINK</div><h2>Students don't need more apps.<br>They need <span class="gold">one organized system.</span></h2><p>Bring scattered schedules, notes, assignments and due dates together in a workspace that understands your academic week.</p></div><div class="flow"><div class="scatter">${["📄 Timetable PDF", "💬 Class group chat", "🗒 Notes", "📅 Calendar", "⏰ Assignment due", "🧪 Exam schedule"].map((x) => `<span>${x}</span>`).join("")}</div><div class="arrow">⟶</div><div class="workspace"><b>✦ Your Studora workspace</b><div class="wrow"><span>Today's classes</span><b>3 scheduled</b></div><div class="wrow"><span>Tasks to finish</span><b>4 remaining</b></div><div class="wrow"><span>Next deadline</span><b class="gold">Physics · 2 days</b></div><div class="wrow"><span>Study momentum</span><b style="color:var(--green)">↑ On track</b></div></div></div></div></section>
+<section id="how"><div class="wrap"><div class="stitle"><div class="eyebrow">A LIGHTER WAY TO PLAN</div><h2>From timetable to <span class="gold">clear next steps.</span></h2></div><div class="steps"><article class="step"><strong>01</strong><h3>Add your timetable</h3><p>Upload an image or PDF. OCR extracts classes for you to review.</p></article><article class="step"><strong>02</strong><h3>Add academic work</h3><p>Capture assignments, exams and deadlines in one list.</p></article><article class="step"><strong>03</strong><h3>See your week clearly</h3><p>Bring classes, tasks, goals and calendar events into one view.</p></article><article class="step"><strong>04</strong><h3>Get smart nudges</h3><p>Use reminders and study insights to stay ahead.</p></article></div></div></section>
+<section id="features"><div class="wrap"><div class="stitle"><div class="eyebrow">EVERYTHING CONNECTED</div><h2>Built around the way <span class="gold">students work.</span></h2></div><div class="features">${[
+            ["◷", "Smart timetable", "Organize your weekly classes."],
+            [
+              "✓",
+              "Assignment manager",
+              "Track subject, due date, priority and status.",
+            ],
+            [
+              "⌁",
+              "Deadline tracker",
+              "See urgent work before it becomes a rush.",
+            ],
+            ["♧", "Smart reminders", "Choose when you want a reminder."],
+            [
+              "▦",
+              "Academic calendar",
+              "Classes, assignments and personal dates.",
+            ],
+            [
+              "✦",
+              "AI student assistant",
+              "Ask about your saved academic plan.",
+            ],
+            [
+              "↗",
+              "Progress dashboard",
+              "Track attendance, tasks and CGPA goals.",
+            ],
+            [
+              "◎",
+              "Priority system",
+              "Surface high-priority work and upcoming dates.",
+            ],
+          ]
+            .map(
+              (x) =>
+                `<article class="feature"><div class="ico">${x[0]}</div><h3>${x[1]}</h3><p>${x[2]}</p></article>`,
+            )
+            .join("")}</div></div></section>
+<section><div class="wrap"><div class="stitle"><div class="eyebrow">A FLEXIBLE ACADEMIC WORKSPACE</div><h2>One clear system for <span class="gold">your semester.</span></h2></div><div class="flow"><div class="workspace"><b>YOUR WORKSPACE</b>${["Overview", "My timetable", "Tasks & deadlines", "Personal calendar", "Attendance", "CGPA progress", "AI assistant"].map((x) => `<div class="wrow">${x}<span>›</span></div>`).join("")}</div><div class="arrow">✦</div><div class="workspace"><b>AI STUDENT ASSISTANT</b><div class="bubble">What should I finish today?</div><div class="bubble ai">You have 3 important items:<br>1. Physics lab report — due tomorrow<br>2. Mathematics practice — 6 PM<br>3. CS project outline — due Friday</div><div class="bubble">Remind me 30 minutes before class.</div><div class="bubble ai">Your class reminder preference is set to 30 minutes. ◷</div></div></div></div></section>
+<section id="assistant"><div class="wrap"><div class="stitle"><div class="eyebrow">YOUR CONTEXT-AWARE COMPANION</div><h2>Study smarter, one question <span class="gold">at a time.</span></h2><p>Ask about classes, assignments, attendance or goals. The assistant uses the information saved in your workspace.</p></div><div class="card chatdemo"><div class="bubble">Which assignments are due this week?</div><div class="bubble ai">I'll sort your upcoming tasks by due date and help you choose a priority.</div></div></div></section>
+<section><div class="wrap"><div class="stitle"><div class="eyebrow">PLAN WITH CONFIDENCE</div><h2>Today, this week, and your <span class="gold">bigger goals.</span></h2></div><div class="grid three"><article class="card"><div class="cardtitle"><h3>TODAY</h3><small>YOUR SCHEDULE</small></div><div class="row"><span class="gold">09:00</span><b class="grow">Computer Science</b></div><div class="row"><span class="gold">11:30</span><b class="grow">Applied Mathematics</b></div><div class="row"><span class="tag goldtag">2 TASKS</span><b>Physics lab report</b></div></article><article class="card"><div class="cardtitle"><h3>THIS WEEK</h3><small>WORKLOAD</small></div><div style="height:100px;display:flex;align-items:end;gap:7px">${[38, 68, 49, 85, 55, 29, 12].map((n) => `<i style="height:${n}%;flex:1;background:#31589b;border-radius:4px 4px 0 0"></i>`).join("")}</div><small class="muted">MON　TUE　WED　THU　FRI　SAT　SUN</small></article><article class="card"><div class="cardtitle"><h3>YOUR PROGRESS</h3><small>THIS TERM</small></div><div class="row">Tasks completed <b>7 / 10</b></div><div class="bar"><i style="width:70%"></i></div><div class="row">Attendance <b>86%</b></div><div class="bar"><i style="width:86%;background:var(--gold)"></i></div><div class="row">Study consistency <b style="color:var(--green)">+12%</b></div></article></div></div></section>
+<section class="cta"><div class="eyebrow">YOUR NEXT SEMESTER STARTS HERE</div><h2>Stop managing your schedule.<br><span class="gold">Let Studora organize it.</span></h2><p>One workspace for classes, assignments, deadlines and academic life.</p><button class="btn" onclick="authPage('signup')">Build my student workspace ↗</button></section><footer><div class="wrap">${brand}<span>Features　·　How it works　·　Privacy　·　Terms　·　Contact</span><span>© 2026 Studora</span></div></footer>`;
+      }
+      function authPage(mode = "login") {
+        $("#landing").style.display = "none";
+        $("#app").style.display = "none";
+        $("#auth").style.display = "block";
+        $("#auth").innerHTML =
+          `<div class="auth"><div class="authvisual">${brand}<div><div class="eyebrow">ONE WORKSPACE. MORE HEADSPACE.</div><h1>Your academic life,<br><span class="gold">in focus.</span></h1><div class="mock"><b>Weekly overview</b><div class="minirow">09:00 · Data Science</div><div class="minirow">11:00 · Statistics</div><div class="bar"><i style="width:72%"></i></div></div></div><small class="muted">A calmer system for busy semesters.</small></div><form class="authform" id="authForm"><button class="btn ghost sm" type="button" onclick="landing()">← Back</button><div class="eyebrow" style="margin-top:25px">STUDORA WORKSPACE</div><h2>${mode === "signup" ? "Create your account" : "Welcome back"}</h2><p class="muted">${mode === "signup" ? "Start organizing your academic life." : "Sign in to your workspace."}</p>${mode === "signup" ? '<div class="field"><label>Name</label><input class="input" id="authName" required></div>' : ""}<div class="field"><label>Email</label><input class="input" id="authEmail" type="email" required></div><div class="field"><label>Password</label><input class="input" id="authPass" type="password" minlength="4" required></div><button class="btn">${mode === "signup" ? "Create account ↗" : "Log in ↗"}</button><p style="text-align:center;font-size:11px" class="muted">${mode === "signup" ? "Already have an account?" : "New to Studora?"} <button class="btn ghost sm" type="button" onclick="authPage('${mode === "signup" ? "login" : "signup"}')">${mode === "signup" ? "Log in" : "Sign up"}</button></p><div class="notice">Demo account is stored in this browser. Google/Microsoft sign-in and cloud sync are not connected.</div></form></div>`;
+        $("#authForm").onsubmit = (e) => {
+          e.preventDefault();
+          let email = $("#authEmail").value.trim().toLowerCase(),
+            pass = $("#authPass").value;
+          if (mode === "signup") {
+            if (state.users[email])
+              return toast("This email already has an account.");
+            state.users[email] = {
+              email,
+              pass,
+              name: $("#authName").value.trim(),
+              data: null,
+            };
+          } else if (!state.users[email] || state.users[email].pass !== pass)
+            return toast("Email or password is incorrect.");
+          state.session = email;
+          profile();
+          save();
+          if (mode === "signup") startOnboarding();
+          else openApp();
+        };
+      }
+      let onboardStep = 0;
+      function startOnboarding(step = 0) {
+        onboardStep = step;
+        drawOnboarding();
+      }
+      function drawOnboarding() {
+        let p = profile(),
+          titles = [
+            "Tell us about your academic life",
+            "Add your timetable",
+            "Add academic deadlines",
+            "Set reminder preferences",
+          ];
+        let body =
+          onboardStep === 0
+            ? `<div class="field"><label>Name</label><input id="obName" class="input" value="${esc(p.name)}"></div><div class="field"><label>College / school</label><input id="obCollege" class="input" placeholder="College or university" value="${esc(p.college)}"></div><div class="grid two"><div class="field"><label>Course</label><input id="obCourse" class="input" value="${esc(p.course)}"></div><div class="field"><label>Semester / year</label><input id="obSemester" class="input" value="${esc(p.semester)}"></div></div>`
+            : onboardStep === 1
+              ? `<p class="muted" style="font-size:11px;line-height:1.6">Upload a timetable image or PDF to automatically scan periods, or skip and add classes later from My Timetable.</p><div class="drop"><label for="obFile">⇧ Choose timetable image or PDF</label><input id="obFile" type="file" accept="image/*,.pdf,application/pdf"><div id="scanStatus" class="muted" style="font-size:10px;margin-top:8px">OCR runs in your browser; internet is needed for first load.</div></div><div id="scanResults"></div>`
+              : onboardStep === 2
+                ? `<p class="muted" style="font-size:11px">Add one deadline now, or skip and add more from Tasks & deadlines.</p><div class="field"><label>Assignment, exam or task</label><input id="obTask" class="input" placeholder="Physics lab report"></div><div class="grid two"><div class="field"><label>Subject</label><input id="obSubject" class="input" placeholder="Physics"></div><div class="field"><label>Due date</label><input id="obDue" class="input" type="date"></div></div>`
+                : `<p class="muted" style="font-size:11px">Choose how early you want a reminder before each class.</p><select id="obReminder" class="input"><option value="10">10 minutes before</option><option value="30" selected>30 minutes before</option><option value="60">1 hour before</option><option value="1440">1 day before</option></select>`;
+        openModal(
+          `<div class="modalbg"><div class="modal"><div class="eyebrow">SETUP · ${onboardStep + 1} OF 4</div><h3 style="margin-top:8px">${titles[onboardStep]}</h3>${body}<div style="display:flex;justify-content:space-between;margin-top:16px"><button class="btn ghost sm" onclick="skipOnboarding()">Set up later</button><button class="btn" onclick="nextOnboarding()">${onboardStep === 3 ? "Finish setup" : "Continue →"}</button></div></div></div>`,
+        );
+        if (onboardStep === 1)
+          $("#obFile").onchange = (e) => scanFile(e.target.files[0]);
+      }
+      function nextOnboarding() {
+        let p = profile();
+        if (onboardStep === 0) {
+          p.name = $("#obName").value.trim() || p.name;
+          p.college = $("#obCollege").value.trim();
+          p.course = $("#obCourse").value.trim();
+          p.semester = $("#obSemester").value.trim();
+        }
+        if (onboardStep === 2) {
+          let title = $("#obTask").value.trim();
+          if (title)
+            p.tasks.push({
+              id: uid(),
+              title,
+              subject: $("#obSubject").value.trim(),
+              type: "Assignment",
+              priority: "Medium",
+              due: $("#obDue").value,
+              done: false,
+            });
+        }
+        if (onboardStep === 3) p.reminder = +$("#obReminder").value;
+        save();
+        if (onboardStep < 3) {
+          onboardStep++;
+          drawOnboarding();
+        } else {
+          closeModal();
+          active = "home";
+          openApp();
+          toast("Your workspace is ready");
+        }
+      }
+      function skipOnboarding() {
+        closeModal();
+        active = "home";
+        openApp();
+      }
+      function logout() {
+        state.session = null;
+        save();
+        landing();
+      }
+      const nav = [
+        ["home", "⌂", "Overview"],
+        ["timetable", "◷", "Timetable"],
+        ["tasks", "✓", "Tasks & deadlines"],
+        ["calendar", "▦", "Calendar"],
+        ["attendance", "◉", "Attendance"],
+        ["cgpa", "↗", "CGPA goals"],
+        ["assistant", "✦", "AI assistant"],
+      ];
+      function openApp() {
+        if (!user()) return landing();
+        $("#landing").style.display = "none";
+        $("#auth").style.display = "none";
+        $("#app").style.display = "block";
+        renderApp();
+      }
+      function head(title, sub, button = "") {
+        return `<div class="pagehead"><div><div class="eyebrow">STUDORA WORKSPACE</div><h1>${title}</h1><p>${sub}</p></div>${button}</div>`;
+      }
+      function go(page) {
+        active = page;
+        renderApp();
+      }
+      function openModal(html) {
+        $("#modal").innerHTML = html;
+      }
+      function closeModal() {
+        $("#modal").innerHTML = "";
+      }
+      function addTask() {
+        openModal(
+          `<div class="modalbg"><form class="modal" id="taskForm"><h3>Add academic work</h3><div class="field"><label>Task / assignment</label><input class="input" name="title" required placeholder="Physics lab report"></div><div class="field"><label>Subject</label><input class="input" name="subject" placeholder="Physics"></div><div class="grid two"><div class="field"><label>Type</label><select class="input" name="type"><option>Assignment</option><option>Project</option><option>Exam</option><option>Quiz</option><option>Presentation</option><option>Study task</option></select></div><div class="field"><label>Priority</label><select class="input" name="priority"><option>Medium</option><option>High</option><option>Low</option></select></div></div><div class="field"><label>Due date</label><input class="input" name="due" type="date" value="${today()}"></div><div style="text-align:right"><button type="button" class="btn outline" onclick="closeModal()">Cancel</button> <button class="btn">Add task</button></div></form></div>`,
+        );
+        $("#taskForm").onsubmit = (e) => {
+          e.preventDefault();
+          let f = new FormData(e.target),
+            p = profile();
+          p.tasks.unshift({
+            id: uid(),
+            title: f.get("title").trim(),
+            subject: f.get("subject"),
+            type: f.get("type"),
+            priority: f.get("priority"),
+            due: f.get("due"),
+            done: false,
+          });
+          save();
+          closeModal();
+          renderApp();
+          toast("Task added");
+        };
+      }
+      function taskRows(items) {
+        if (!items.length)
+          return '<div class="empty">Nothing here yet. Add your first academic task.</div>';
+        return items
+          .map(
+            (t) =>
+              `<div class="row"><button class="iconbtn" onclick="toggleTask('${t.id}')">${t.done ? "✓" : "○"}</button><span class="grow"><b style="${t.done ? "text-decoration:line-through;color:var(--muted)" : ""}">${esc(t.title)}</b><small>${esc(t.subject || t.type)} · Due ${t.due || "not set"}</small></span><span class="tag ${t.priority === "High" ? "redtag" : "goldtag"}">${esc(t.priority)}</span><button class="iconbtn" onclick="removeTask('${t.id}')">×</button></div>`,
+          )
+          .join("");
+      }
+      function toggleTask(id) {
+        let t = profile().tasks.find((x) => x.id === id);
+        if (t) {
+          t.done = !t.done;
+          t.doneAt = t.done ? today() : "";
+        }
+        save();
+        renderApp();
+      }
+      function removeTask(id) {
+        let p = profile();
+        p.tasks = p.tasks.filter((t) => t.id !== id);
+        save();
+        renderApp();
+      }
+      function dateText(ds) {
+        return new Date(ds + "T12:00:00").toLocaleDateString(undefined, {
+          month: "short",
+          day: "numeric",
+        });
+      }
+      function todayClasses() {
+        let p = profile(),
+          d = days[(new Date().getDay() + 6) % 7];
+        return p.schedule
+          .filter((c) => c.day === d)
+          .sort((a, b) => a.start.localeCompare(b.start));
+      }
+      function attStats(p) {
+        let a = Object.values(p.attendance || {}),
+          n = a.filter((x) => x === "present").length;
+        return {
+          n,
+          total: a.length,
+          pct: a.length ? Math.round((n / a.length) * 100) : 0,
+        };
+      }
+      function cgpa(p) {
+        let cr = 0,
+          pts = 0;
+        p.semesters.forEach((s) => {
+          cr += +s.credits;
+          pts += +s.gpa * +s.credits;
+        });
+        return cr ? pts / cr : null;
+      }
+      function homePage() {
+        let p = profile(),
+          open = p.tasks
+            .filter((t) => !t.done)
+            .sort((a, b) => (a.due || "9999").localeCompare(b.due || "9999")),
+          cls = todayClasses(),
+          a = attStats(p),
+          cg = cgpa(p),
+          soon = open.filter((t) => t.due && t.due >= today()).slice(0, 4),
+          h = new Date().getHours();
+        return `${head(`${h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening"}, ${esc(p.name.split(" ")[0])} ✦`, "Here’s your academic day at a glance.", `<button class="btn" onclick="addTask()">＋ Add work</button>`)}<div class="grid stats"><div class="card"><div class="statlabel">CLASSES TODAY</div><div class="value">${cls.length}</div><small class="muted">${cls[0] ? `Next · ${esc(cls[0].start)} ${esc(cls[0].subject)}` : "Upload your timetable"}</small></div><div class="card"><div class="statlabel">TASKS REMAINING</div><div class="value">${open.length}</div><small class="muted">${p.tasks.filter((t) => t.done).length} completed</small></div><div class="card"><div class="statlabel">ATTENDANCE</div><div class="value">${a.total ? a.pct + "%" : "—"}</div><small class="muted">${a.n} of ${a.total} marked attended</small></div><div class="card"><div class="statlabel">CURRENT CGPA</div><div class="value">${cg === null ? "—" : cg.toFixed(2)}</div><small class="muted">Goal · ${(+p.target).toFixed(2)}</small></div></div><div class="grid two"><article class="card"><div class="cardtitle"><h3>Today's classes</h3><button class="btn ghost sm" onclick="go('timetable')">Full timetable ↗</button></div>${cls.length ? cls.map((c) => `<div class="row"><span class="gold">${esc(c.start)}</span><span class="grow"><b>${esc(c.subject)}</b><small>${esc(c.room || "Class")} · ends ${esc(c.end)}</small></span></div>`).join("") : '<div class="empty">No classes today. Scan or add a timetable.</div>'}</article><article class="card"><div class="cardtitle"><h3>Priority queue</h3><button class="btn ghost sm" onclick="addTask()">＋ Add task</button></div>${taskRows(soon)}</article><article class="card"><div class="cardtitle"><h3>Weekly focus</h3><small>COMPLETED TASKS</small></div><div style="height:95px;display:flex;align-items:end;gap:8px">${days
+          .slice(0, 6)
+          .map((d, i) => {
+            let n = p.tasks.filter(
+              (t) =>
+                t.done &&
+                t.doneAt &&
+                new Date(t.doneAt + "T12:00:00").getDay() === (i + 1) % 7,
+            ).length;
+            return `<div style="flex:1;text-align:center"><i style="display:block;height:${Math.min(18 + n * 17, 75)}px;background:${i === new Date().getDay() - 1 ? "var(--gold)" : "#355b9c"};border-radius:4px 4px 0 0"></i><small class="muted">${d.slice(0, 2)}</small></div>`;
+          })
+          .join(
+            "",
+          )}</div><div class="notice">${soon.length ? `✦ Next deadline: ${esc(soon[0].title)} · ${dateText(soon[0].due)}` : "Add tasks to see upcoming deadlines and workload insights."}</div></article><article class="card"><div class="cardtitle"><h3>Upcoming deadlines</h3><button class="btn ghost sm" onclick="go('tasks')">See all ↗</button></div>${soon.length ? soon.map((t) => `<div class="row"><span class="tag ${t.priority === "High" ? "redtag" : "goldtag"}">${dateText(t.due)}</span><span class="grow"><b>${esc(t.title)}</b><small>${esc(t.subject || t.type)}</small></span></div>`).join("") : '<div class="empty">No upcoming deadlines.</div>'}</article></div>`;
+      }
+      function timetablePage() {
+        let p = profile();
+        return `${head("My timetable", "Your weekly classes in one clear view.", `<button class="btn" onclick="showUpload()">⇧ Scan timetable</button>`)}<div class="grid two" style="margin-bottom:12px"><article class="card"><div class="cardtitle"><h3>Computer vision timetable scan</h3><small>IMAGE OR PDF</small></div><p class="muted" style="font-size:11px;line-height:1.6">Upload a clear image or PDF. OCR reads day names, times and class labels, then imports recognized periods to the weekly schedule for review.</p><button class="btn outline sm" onclick="showUpload()">Choose timetable ↗</button></article><article class="card"><div class="cardtitle"><h3>Enter a period manually</h3></div><button class="btn outline sm" onclick="manualClass()">＋ Add class</button><div class="notice">OCR accuracy depends on image quality and readable day/time labels. Review imported classes.</div></article></div><div class="grid">${days
+          .map((d) => {
+            let arr = p.schedule
+              .filter((c) => c.day === d)
+              .sort((a, b) => a.start.localeCompare(b.start));
+            return `<article class="card"><div class="cardtitle"><h3>${d}</h3><small>${arr.length} CLASSES</small></div>${arr.length ? arr.map((c) => `<div class="classrow"><span class="clock">${esc(c.start)}<br><span class="muted">${esc(c.end)}</span></span><span><b>${esc(c.subject)}</b><small class="muted" style="display:block">${esc(c.room || "")}</small></span><button class="iconbtn right" onclick="removeClass('${c.id}')">×</button></div>`).join("") : '<small class="muted">No scheduled classes.</small>'}</article>`;
+          })
+          .join("")}</div>`;
+      }
+      function manualClass() {
+        openModal(
+          `<div class="modalbg"><form class="modal" id="classForm"><h3>Add a class</h3><div class="field"><label>Subject</label><input class="input" name="subject" required></div><div class="grid two"><div class="field"><label>Day</label><select class="input" name="day">${days.map((d) => `<option>${d}</option>`).join("")}</select></div><div class="field"><label>Room / teacher</label><input class="input" name="room"></div></div><div class="grid two"><div class="field"><label>Start</label><input class="input" name="start" type="time" required></div><div class="field"><label>End</label><input class="input" name="end" type="time" required></div></div><div style="text-align:right"><button type="button" class="btn outline" onclick="closeModal()">Cancel</button> <button class="btn">Save period</button></div></form></div>`,
+        );
+        $("#classForm").onsubmit = (e) => {
+          e.preventDefault();
+          let f = new FormData(e.target);
+          profile().schedule.push({
+            id: uid(),
+            subject: f.get("subject"),
+            day: f.get("day"),
+            room: f.get("room"),
+            start: f.get("start"),
+            end: f.get("end"),
+          });
+          save();
+          closeModal();
+          renderApp();
+        };
+      }
+      function removeClass(id) {
+        let p = profile();
+        p.schedule = p.schedule.filter((c) => c.id !== id);
+        save();
+        renderApp();
+      }
+      function showUpload() {
+        openModal(
+          `<div class="modalbg"><div class="modal"><h3>Scan timetable</h3><p class="muted" style="font-size:11px;line-height:1.6">The file is processed in your browser. For PDF files, the first page is scanned. Recognized periods are added automatically; please review results.</p><div class="drop"><label for="scheduleFile">⇧ Choose image or PDF</label><input id="scheduleFile" type="file" accept="image/*,.pdf,application/pdf"><div id="scanStatus" class="muted" style="font-size:10px;margin-top:9px">JPG, PNG, WEBP or PDF · internet required for first OCR load</div></div><div id="scanResults"></div><div style="text-align:right;margin-top:12px"><button class="btn outline" onclick="closeModal()">Close</button></div></div></div>`,
+        );
+        $("#scheduleFile").onchange = (e) => scanFile(e.target.files[0]);
+      }
+      async function scanFile(file) {
+        if (!file) return;
+        let status = $("#scanStatus");
+        status.textContent = "Preparing file…";
+        try {
+          if (!window.Tesseract)
+            throw Error(
+              "OCR library unavailable. Check your internet connection and reload.",
+            );
+          let image = file;
+          if (file.type === "application/pdf") {
+            if (!window.pdfjsLib)
+              throw Error(
+                "PDF reader unavailable. Check your internet connection and reload.",
+              );
+            pdfjsLib.GlobalWorkerOptions.workerSrc =
+              "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+            let pdf = await pdfjsLib.getDocument({
+                data: await file.arrayBuffer(),
+              }).promise,
+              page = await pdf.getPage(1),
+              vp = page.getViewport({ scale: 2 }),
+              canvas = document.createElement("canvas");
+            canvas.width = vp.width;
+            canvas.height = vp.height;
+            await page.render({
+              canvasContext: canvas.getContext("2d"),
+              viewport: vp,
+            }).promise;
+            image = canvas;
+          }
+          status.textContent =
+            "Reading timetable… first scan may take a minute.";
+          let worker = await Tesseract.createWorker("eng", 1, {
+              logger: (m) => {
+                if (m.status === "recognizing text")
+                  status.textContent = `Reading timetable… ${Math.round(m.progress * 100)}%`;
+              },
+            }),
+            result;
+          try {
+            result = await worker.recognize(image);
+          } finally {
+            await worker.terminate();
+          }
+          let parsed = parseOCR(result.data.text, result.data.words);
+          if (!parsed.length) {
+            $("#scanResults").innerHTML =
+              `<div class="notice">Text was detected, but no day/time rows could be matched. Try a clearer image, or add periods manually.<details><summary>OCR text</summary><pre style="white-space:pre-wrap">${esc(result.data.text)}</pre></details></div>`;
+            status.textContent = "Scan complete · no period rows found";
+            return;
+          }
+          let p = profile(),
+            added = 0;
+          for (let c of parsed)
+            if (
+              !p.schedule.some(
+                (x) =>
+                  x.day === c.day &&
+                  x.start === c.start &&
+                  x.subject.toLowerCase() === c.subject.toLowerCase(),
+              )
+            ) {
+              p.schedule.push({ id: uid(), ...c });
+              added++;
+            }
+          save();
+          status.textContent = `Scan complete · ${added} periods added`;
+          $("#scanResults").innerHTML =
+            `<div class="notice" style="color:var(--green)">✓ Imported ${added} periods. Check the weekly timetable and correct any OCR errors.</div>${parsed.map((c) => `<div class="row"><span class="gold">${esc(c.day)} ${esc(c.start)}</span><b class="grow">${esc(c.subject)}</b></div>`).join("")}`;
+        } catch (err) {
+          status.textContent = "Scan failed";
+          $("#scanResults").innerHTML =
+            `<div class="notice" style="color:var(--red)">${esc(err.message)}</div>`;
+        }
+      }
+      function parseOCR(text, words = []) {
+        let out = [],
+          lines = text
+            .split(/\n+/)
+            .map((x) => x.replace(/[|]/g, " ").replace(/\s+/g, " ").trim())
+            .filter(Boolean),
+          map = {
+            mon: "Monday",
+            monday: "Monday",
+            tue: "Tuesday",
+            tues: "Tuesday",
+            tuesday: "Tuesday",
+            wed: "Wednesday",
+            wednesday: "Wednesday",
+            thu: "Thursday",
+            thur: "Thursday",
+            thurs: "Thursday",
+            thursday: "Thursday",
+            fri: "Friday",
+            friday: "Friday",
+            sat: "Saturday",
+            saturday: "Saturday",
+            sun: "Sunday",
+            sunday: "Sunday",
+          },
+          range =
+            /\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*(?:-|–|to)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/i,
+          fmt = (h, mi, ap) => {
+            h = +h;
+            mi = mi || "00";
+            if (ap) {
+              ap = ap.toLowerCase();
+              if (ap === "pm" && h < 12) h += 12;
+              if (ap === "am" && h === 12) h = 0;
+            }
+            return String(h).padStart(2, "0") + ":" + mi;
+          };
+        for (let line of lines) {
+          let day = Object.entries(map).find(([k]) =>
+              new RegExp("\\b" + k + "\\b", "i").test(line),
+            )?.[1],
+            m = line.match(range);
+          if (!day || !m) continue;
+          let subject = line
+            .replace(m[0], " ")
+            .replace(new RegExp(day, "i"), " ")
+            .replace(/\b(room|teacher|classroom)\b/gi, " ")
+            .replace(/\s+/g, " ")
+            .replace(/^[\s:,-]+|[\s:,-]+$/g, "");
+          if (subject.length > 1)
+            out.push({
+              day,
+              start: fmt(m[1], m[2], m[3]),
+              end: fmt(m[4], m[5], m[6]),
+              subject: subject.slice(0, 80),
+              room: "",
+            });
+        }
+        if (out.length || !words.length) return out;
+        let dayWords = words
+          .map((w) => ({
+            w,
+            t: (w.text || "").toLowerCase().replace(/[^a-z]/g, ""),
+            x: (w.bbox.x0 + w.bbox.x1) / 2,
+            y: (w.bbox.y0 + w.bbox.y1) / 2,
+          }))
+          .filter((o) => map[o.t])
+          .map((o) => ({ day: map[o.t], x: o.x, y: o.y }));
+        let groups = [];
+        for (let w of words.filter((w) => w.text && w.bbox)) {
+          let y = (w.bbox.y0 + w.bbox.y1) / 2,
+            g = groups.find((g) => Math.abs(g.y - y) < 12);
+          if (!g) groups.push((g = { y, words: [] }));
+          g.words.push(w);
+        }
+        groups.forEach((g) => {
+          g.words.sort((a, b) => a.bbox.x0 - b.bbox.x0);
+          g.text = g.words
+            .map((w) => w.text)
+            .join(" ")
+            .replace(/\s+/g, " ")
+            .trim();
+          g.x = (g.words[0].bbox.x0 + g.words[g.words.length - 1].bbox.x1) / 2;
+          g.range = g.text.match(range);
+        });
+        let times = groups
+            .filter((g) => g.range)
+            .map((g) => {
+              let m = g.range;
+              return {
+                y: g.y,
+                start: fmt(m[1], m[2], m[3]),
+                end: fmt(m[4], m[5], m[6]),
+              };
+            }),
+          headers = dayWords.filter(
+            (d) => !times.some((t) => Math.abs(t.y - d.y) < 20),
+          );
+        for (let g of groups) {
+          if (
+            g.range ||
+            !g.text ||
+            g.text.length < 3 ||
+            /^(mon|tue|wed|thu|fri|sat|sun)(day)?$/i.test(g.text)
+          )
+            continue;
+          let dh = headers
+              .slice()
+              .sort((a, b) => Math.abs(a.x - g.x) - Math.abs(b.x - g.x))[0],
+            tm = times
+              .slice()
+              .sort((a, b) => Math.abs(a.y - g.y) - Math.abs(b.y))[0];
+          if (!dh || !tm || Math.abs(tm.y - g.y) > 48) continue;
+          let subject = g.text
+            .replace(/\b(room|teacher|classroom)\b/gi, "")
+            .replace(/[^\p{L}\p{N}&. -]/gu, "")
+            .trim();
+          if (
+            subject.length > 2 &&
+            !out.some(
+              (c) =>
+                c.day === dh.day &&
+                c.start === tm.start &&
+                c.subject === subject,
+            )
+          )
+            out.push({
+              day: dh.day,
+              start: tm.start,
+              end: tm.end,
+              subject: subject.slice(0, 80),
+              room: "",
+            });
+        }
+        return out;
+      }
+      function tasksPage() {
+        let p = profile(),
+          open = p.tasks
+            .filter((t) => !t.done)
+            .sort((a, b) => (a.due || "9999").localeCompare(b.due || "9999")),
+          done = p.tasks.filter((t) => t.done),
+          weekEnd = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10);
+        return `${head("Tasks & deadlines", "Assignments, exams and study work in one place.", `<button class="btn" onclick="addTask()">＋ Add task</button>`)}<div class="grid stats"><div class="card"><div class="statlabel">OPEN TASKS</div><div class="value">${open.length}</div></div><div class="card"><div class="statlabel">HIGH PRIORITY</div><div class="value">${open.filter((t) => t.priority === "High").length}</div></div><div class="card"><div class="statlabel">COMPLETED</div><div class="value">${done.length}</div></div><div class="card"><div class="statlabel">DUE THIS WEEK</div><div class="value">${open.filter((t) => t.due && t.due <= weekEnd).length}</div></div></div><article class="card"><div class="cardtitle"><h3>Academic work database</h3><small>ASSIGNMENTS · PROJECTS · EXAMS</small></div>${
+          p.tasks.length
+            ? `<div class="tablewrap"><table class="table"><thead><tr><th>ASSIGNMENT / TASK</th><th>SUBJECT</th><th>DUE DATE</th><th>PRIORITY</th><th>STATUS</th><th></th></tr></thead><tbody>${p.tasks
+                .slice()
+                .sort((a, b) =>
+                  (a.due || "9999").localeCompare(b.due || "9999"),
+                )
+                .map(
+                  (t) =>
+                    `<tr><td><b>${esc(t.title)}</b><br><small class="muted">${esc(t.type)}</small></td><td>${esc(t.subject || "—")}</td><td>${t.due ? dateText(t.due) : "—"}</td><td><span class="tag ${t.priority === "High" ? "redtag" : "goldtag"}">${esc(t.priority)}</span></td><td><button class="btn sm ${t.done ? "outline" : "blue"}" onclick="toggleTask('${t.id}')">${t.done ? "Completed" : "In progress"}</button></td><td><button class="iconbtn" onclick="removeTask('${t.id}')">×</button></td></tr>`,
+                )
+                .join("")}</tbody></table></div>`
+            : '<div class="empty">Nothing here yet. Add your first academic task.</div>'
+        }</article>`;
+      }
+      function calendarPage() {
+        let p = profile(),
+          y = cal.getFullYear(),
+          m = cal.getMonth(),
+          offset = (new Date(y, m, 1).getDay() + 6) % 7,
+          total = new Date(y, m + 1, 0).getDate(),
+          cells = [];
+        for (let i = 0; i < offset; i++)
+          cells.push('<div class="calday"></div>');
+        for (let d = 1; d <= total; d++) {
+          let ds = `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`,
+            date = new Date(ds + "T12:00:00"),
+            day = days[(date.getDay() + 6) % 7],
+            classes = p.schedule.filter((c) => c.day === day),
+            events = p.events.filter((e) => e.date === ds),
+            tasks = p.tasks.filter((t) => t.due === ds);
+          cells.push(
+            `<div class="calday ${ds === today() ? "today" : ""}" onclick="addEvent('${ds}')">${d}${classes.map((c) => `<span class="event" title="${esc(c.start + " " + c.subject)}">${esc(c.start)} ${esc(c.subject)}</span>`).join("")}${events.map((e) => `<span class="event">${esc(e.title)}</span>`).join("")}${tasks.map((t) => `<span class="event" style="border-color:var(--gold)">${esc(t.title)}</span>`).join("")}</div>`,
+          );
+        }
+        return `${head("Personal calendar", "Classes, deadlines and important dates in one place.", `<button class="btn" onclick="addEvent('${today()}')">＋ Add event</button>`)}<article class="card"><div class="cardtitle"><button class="iconbtn" onclick="changeMonth(-1)">←</button><b>${cal.toLocaleDateString(undefined, { month: "long", year: "numeric" })}</b><button class="iconbtn" onclick="changeMonth(1)">→</button></div><div class="calendar">${["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map((d) => `<div class="calhead">${d}</div>`).join("")}${cells.join("")}</div><small class="muted">Select a date to add an event. Weekly classes and task deadlines appear automatically.</small></article>`;
+      }
+      function changeMonth(n) {
+        cal.setMonth(cal.getMonth() + n);
+        renderApp();
+      }
+      function addEvent(ds) {
+        openModal(
+          `<div class="modalbg"><form class="modal" id="eventForm"><h3>Add calendar event</h3><div class="field"><label>Event</label><input name="title" class="input" required placeholder="Study group, exam…"></div><div class="field"><label>Date</label><input name="date" class="input" type="date" value="${ds}"></div><div style="text-align:right"><button type="button" class="btn outline" onclick="closeModal()">Cancel</button> <button class="btn">Add</button></div></form></div>`,
+        );
+        $("#eventForm").onsubmit = (e) => {
+          e.preventDefault();
+          let f = new FormData(e.target);
+          profile().events.push({
+            id: uid(),
+            title: f.get("title").trim(),
+            date: f.get("date"),
+          });
+          save();
+          closeModal();
+          renderApp();
+        };
+      }
+      function attendancePage() {
+        let p = profile(),
+          d = days[(new Date().getDay() + 6) % 7],
+          cls = p.schedule.filter((c) => c.day === d),
+          a = attStats(p);
+        return `${head("Attendance tracker", "Mark classes and track your overall attendance rate.")}<div class="grid stats"><div class="card"><div class="statlabel">OVERALL ATTENDANCE</div><div class="value">${a.total ? a.pct + "%" : "—"}</div></div><div class="card"><div class="statlabel">ATTENDED</div><div class="value">${a.n}</div></div><div class="card"><div class="statlabel">MARKED CLASSES</div><div class="value">${a.total}</div></div><div class="card"><div class="statlabel">REFERENCE</div><div class="value">75%</div><small class="muted">Check your college policy</small></div></div><article class="card"><div class="cardtitle"><h3>Today's register</h3><small>${new Date().toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" })}</small></div>${
+          cls.length
+            ? cls
+                .map((c) => {
+                  let k = today() + ":" + c.id,
+                    v = p.attendance[k];
+                  return `<div class="row"><span class="grow"><b>${esc(c.subject)}</b><small>${esc(c.start)}–${esc(c.end)} · ${esc(c.room || "Class")}</small></span><button class="btn sm ${v === "present" ? "" : "outline"}" onclick="markAttendance('${k}','present')">Present</button><button class="btn sm ${v === "absent" ? "danger" : "outline"}" onclick="markAttendance('${k}','absent')">Absent</button></div>`;
+                })
+                .join("")
+            : '<div class="empty">No classes scheduled today. Add your timetable to track attendance.</div>'
+        }</article><div class="notice">Attendance is stored per class in this browser. Change a mark at any time by selecting Present or Absent.</div>`;
+      }
+      function markAttendance(k, v) {
+        let p = profile();
+        p.attendance[k] = p.attendance[k] === v ? "" : v;
+        save();
+        renderApp();
+      }
+      function cgpaPage() {
+        let p = profile(),
+          cg = cgpa(p),
+          target = +p.target || 8.5,
+          progress = cg === null ? 0 : Math.min(100, (cg / target) * 100);
+        return `${head("CGPA goal tracker", "Track semester results and keep your target in view.", `<button class="btn" onclick="addSemester()">＋ Add semester</button>`)}<div class="grid two"><article class="card"><div class="eyebrow">CURRENT CGPA</div><div class="value" style="font-size:43px">${cg === null ? "—" : cg.toFixed(2)} <small class="muted" style="font-size:12px">/ 10</small></div><div class="bar" style="height:8px"><i style="width:${progress}%;background:linear-gradient(90deg,var(--blue),var(--gold))"></i></div><small class="muted">${cg === null ? "Add a semester result to calculate your CGPA" : `${p.semesters.length} semesters · credit weighted`}</small></article><article class="card"><div class="cardtitle"><h3>Your goal</h3><small>EDIT TARGET</small></div><label class="muted" style="font-size:10px">Target CGPA (0–10)</label><div style="display:flex;gap:7px;margin-top:7px"><input id="target" class="input" type="number" min="0" max="10" step=".1" value="${target}"><button class="btn sm" onclick="saveTarget()">Save</button></div><div class="notice">${cg === null ? "Add semester grades to see your progress." : cg >= target ? "✦ You have reached your target." : `You are ${(target - cg).toFixed(2)} points away from your goal.`}</div></article></div><article class="card" style="margin-top:12px"><div class="cardtitle"><h3>Semester history</h3><small>WEIGHTED BY CREDITS</small></div>${p.semesters.length ? `<div class="tablewrap"><table class="table"><thead><tr><th>SEMESTER</th><th>GPA</th><th>CREDITS</th><th>WEIGHTED POINTS</th><th></th></tr></thead><tbody>${p.semesters.map((s) => `<tr><td>${esc(s.name)}</td><td>${(+s.gpa).toFixed(2)}</td><td>${s.credits}</td><td>${(+s.gpa * +s.credits).toFixed(2)}</td><td><button class="iconbtn" onclick="removeSem('${s.id}')">×</button></td></tr>`).join("")}</tbody></table></div>` : '<div class="empty">Add a semester GPA and credit count to begin.</div>'}</article>`;
+      }
+      function addSemester() {
+        openModal(
+          `<div class="modalbg"><form id="semForm" class="modal"><h3>Add semester result</h3><div class="field"><label>Semester</label><input class="input" name="name" required placeholder="Semester 1"></div><div class="grid two"><div class="field"><label>GPA</label><input class="input" name="gpa" type="number" min="0" max="10" step=".01" required></div><div class="field"><label>Credits</label><input class="input" name="credits" type="number" min="1" value="20" required></div></div><div style="text-align:right"><button type="button" class="btn outline" onclick="closeModal()">Cancel</button> <button class="btn">Save</button></div></form></div>`,
+        );
+        $("#semForm").onsubmit = (e) => {
+          e.preventDefault();
+          let f = new FormData(e.target);
+          profile().semesters.push({
+            id: uid(),
+            name: f.get("name"),
+            gpa: +f.get("gpa"),
+            credits: +f.get("credits"),
+          });
+          save();
+          closeModal();
+          renderApp();
+        };
+      }
+      function removeSem(id) {
+        let p = profile();
+        p.semesters = p.semesters.filter((s) => s.id !== id);
+        save();
+        renderApp();
+      }
+      function saveTarget() {
+        let n = +$("#target").value;
+        if (n < 0 || n > 10) return toast("Enter a goal between 0 and 10");
+        profile().target = n;
+        save();
+        renderApp();
+        toast("Goal updated");
+      }
+      function assistantPage() {
+        return `${head("AI student assistant", "Ask about your schedule, tasks and academic goals.")}<article class="card chatpanel"><div id="messages" class="messages"><div class="msg">Hi ${esc(profile().name.split(" ")[0])} — I can help with your classes, deadlines, attendance and CGPA. What are you working on?</div></div><div class="prompts">${["What do I need to finish today?", "What classes do I have tomorrow?", "Which tasks are due this week?", "Which task should I prioritize?", "How is my attendance?", "What is my CGPA?"].map((q) => `<button class="prompt" onclick="ask(${JSON.stringify(q)})">${q}</button>`).join("")}</div><form class="compose" id="chatForm"><input id="chatInput" class="input" placeholder="Ask about your academic plan…"><button class="btn">Send ↗</button></form></article><div class="notice">This demo assistant answers from your saved workspace using local rules. It does not send your data to an AI service.</div>`;
+      }
+      function ask(q) {
+        let box = $("#messages");
+        if (!box) return;
+        let m = document.createElement("div");
+        m.className = "msg me";
+        m.textContent = q;
+        box.append(m);
+        let b = document.createElement("div");
+        b.className = "msg";
+        b.textContent = answer(q);
+        box.append(b);
+        box.scrollTop = box.scrollHeight;
+      }
+      function answer(q) {
+        let p = profile(),
+          s = q.toLowerCase(),
+          tasks = p.tasks
+            .filter((t) => !t.done)
+            .sort((a, b) => (a.due || "9999").localeCompare(b.due || "9999"));
+        if (/class|timetable|tomorrow|schedule/.test(s)) {
+          let d =
+              days[
+                (new Date().getDay() + (/tomorrow/.test(s) ? 1 : 0) + 6) % 7
+              ],
+            list = p.schedule
+              .filter((c) => c.day === d)
+              .sort((a, b) => a.start.localeCompare(b.start));
+          return list.length
+            ? `${d}:\n${list.map((c) => `${c.start}–${c.end} · ${c.subject}${c.room ? " · " + c.room : ""}`).join("\n")}`
+            : `No ${d} classes are saved. Scan or add your timetable first.`;
+        }
+        if (/attendance/.test(s)) {
+          let a = attStats(p);
+          return a.total
+            ? `Attendance is ${a.pct}% (${a.n} attended out of ${a.total} marked classes).`
+            : "No attendance recorded yet. Add a timetable and mark today’s classes.";
+        }
+        if (/cgpa|gpa|goal/.test(s)) {
+          let c = cgpa(p);
+          return c === null
+            ? `Your CGPA goal is ${p.target}. Add semester results to calculate your standing.`
+            : `Your current CGPA is ${c.toFixed(2)} / 10. Your goal is ${p.target}.`;
+        }
+        if (/week|due|assignment|task|finish|priorit/.test(s)) {
+          if (!tasks.length)
+            return "No open tasks saved. Add assignments or study tasks and I can help you prioritize.";
+          let w = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10),
+            ls = /week/.test(s)
+              ? tasks.filter((t) => !t.due || t.due <= w)
+              : tasks;
+          return `Your next priorities:\n${ls
+            .slice(0, 5)
+            .map(
+              (t, i) =>
+                `${i + 1}. ${t.title}${t.due ? " · " + dateText(t.due) : ""} · ${t.priority}`,
+            )
+            .join("\n")}`;
+        }
+        if (/remind/.test(s))
+          return `Your reminder preference is ${p.reminder || 30} minutes before class. Browser alerts are not scheduled in this demo.`;
+        return "Ask me about classes, tasks due this week, attendance, CGPA, or which task to prioritize.";
+      }
+      function settingsPage() {
+        let p = profile();
+        return `${head("Academic profile", "Your details and reminder preferences.")}<article class="card" style="max-width:650px"><form id="profileForm"><div class="field"><label>Name</label><input class="input" name="name" value="${esc(p.name)}"></div><div class="field"><label>College / school</label><input class="input" name="college" value="${esc(p.college)}"></div><div class="grid two"><div class="field"><label>Course</label><input class="input" name="course" value="${esc(p.course)}"></div><div class="field"><label>Semester / year</label><input class="input" name="semester" value="${esc(p.semester)}"></div></div><div class="field"><label>Reminder preference</label><select class="input" name="reminder">${[
+          [10, "10 minutes"],
+          [30, "30 minutes"],
+          [60, "1 hour"],
+          [1440, "1 day"],
+        ]
+          .map(
+            ([n, s]) =>
+              `<option value="${n}" ${p.reminder == n ? "selected" : ""}>${s} before class</option>`,
+          )
+          .join(
+            "",
+          )}</select></div><button class="btn">Save profile</button></form><div class="notice">Account and academic data stay in this browser. Cloud sync and push notifications are not connected in this demo.</div></article>`;
+      }
+      function renderApp() {
+        if (!user()) return landing();
+        $("#landing").style.display = "none";
+        $("#auth").style.display = "none";
+        $("#app").style.display = "block";
+        $("#app").innerHTML =
+          `<header class="apphead">${brand}<div style="display:flex;align-items:center;gap:10px"><small class="muted">${esc(profile().college || "My workspace")}</small><button class="iconbtn" onclick="logout()">Log out ↗</button></div></header><div class="appgrid"><aside class="side"><div class="eyebrow" style="padding:9px">WORKSPACE</div>${nav.map((n) => `<button class="nav ${active === n[0] ? "on" : ""}" onclick="go('${n[0]}')"><i>${n[1]}</i>${n[2]}</button>`).join("")}<div class="sidefoot"><button class="nav" onclick="go('settings')"><i>⚙</i>Profile & settings</button></div></aside><section class="main" id="content"></section></div>`;
+        let views = {
+          home: homePage,
+          timetable: timetablePage,
+          tasks: tasksPage,
+          calendar: calendarPage,
+          attendance: attendancePage,
+          cgpa: cgpaPage,
+          assistant: assistantPage,
+          settings: settingsPage,
+        };
+        $("#content").innerHTML = (views[active] || homePage)();
+        let cf = $("#chatForm");
+        if (cf)
+          cf.onsubmit = (e) => {
+            e.preventDefault();
+            let i = $("#chatInput"),
+              q = i.value.trim();
+            if (q) {
+              i.value = "";
+              ask(q);
+            }
+          };
+        let pf = $("#profileForm");
+        if (pf)
+          pf.onsubmit = (e) => {
+            e.preventDefault();
+            let f = new FormData(pf),
+              p = profile();
+            p.name = f.get("name").trim() || "Student";
+            p.college = f.get("college").trim();
+            p.course = f.get("course").trim();
+            p.semester = f.get("semester").trim();
+            p.reminder = +f.get("reminder");
+            save();
+            toast("Profile saved");
+            renderApp();
+          };
+      }
+      if (user()) openApp();
+      else landing();
+    </script>
+  </body>
+</html>
