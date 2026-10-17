@@ -1,0 +1,45 @@
+*{
+margin: 2;
+padding: 12;
+
+}
+.c{
+    height: 100vh;
+    width: 100%;
+    background-image: url(background.JPG);
+    background-position: unset;
+    background-size: cover;
+    padding-left: 15%;
+    padding-right: 5%;
+    box-sizing: content-box;
+    position: relative;
+
+}
+.n{
+    width: 100%;
+    height: 20vh;
+    margin: right;
+    display: grid;
+    align-items: center;
+}
+.l{
+    width: 160px;
+    cursor: pointer;
+}
+.cart{
+    width: 40px;
+    cursor: pointer;
+}
+.nav{
+    flex: 1;
+    padding-left: 60px;
+}
+.nav ul li {
+    display: inline-block;
+    list-style: none;
+    margin: 0px 20px;
+}
+.nav ul li a{
+text-decoration: none;
+color: #ff0000;
+}
